@@ -1,0 +1,18 @@
+{
+  "name": "myapp6",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@expo/metro-runtime": "~6.1.2",
+    "expo": "^54.0.0",
+    "react-native": "0.81.5",
+    "react-native-web": "^0.21.0"
+  }
+}
