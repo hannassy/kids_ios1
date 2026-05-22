@@ -1,6 +1,5 @@
 ﻿import { useState } from "react";
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -8,6 +7,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import QUESTIONS from "./questions";
 
 const QUESTIONS_PER_TEST = 5;
@@ -99,57 +99,59 @@ export default function App() {
   const buttonWidth = Math.min(360, width - 32);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.root}>
-        {screen === "welcome" && (
-          <View style={styles.card}>
-            <Text style={styles.title}>Распределяющая шляпа</Text>
-            <Text style={styles.subtitle}>
-              Пройди тест и узнай, к какому факультету Хогвартса ты принадлежишь.
-            </Text>
-            <TouchableOpacity
-              style={[styles.button, { width: buttonWidth }]}
-              onPress={startTest}
-            >
-              <Text style={styles.buttonText}>Пройти тест</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.root}>
+          {screen === "welcome" && (
+            <View style={styles.card}>
+              <Text style={styles.title}>Распределяющая шляпа</Text>
+              <Text style={styles.subtitle}>
+                Пройди тест и узнай, к какому факультету Хогвартса ты принадлежишь.
+              </Text>
+              <TouchableOpacity
+                style={[styles.button, { width: buttonWidth }]}
+                onPress={startTest}
+              >
+                <Text style={styles.buttonText}>Пройти тест</Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
-        {screen === "quiz" && question && (
-          <View style={styles.card}>
-            <Text style={styles.progress}>
-              Вопрос {currentIndex + 1} из {QUESTIONS_PER_TEST}
-            </Text>
-            <Text style={styles.question}>{question.text}</Text>
-            <ScrollView style={styles.options}>
-              {question.options.map((option) => (
-                <TouchableOpacity
-                  key={option.id}
-                  style={[styles.optionButton, { width: buttonWidth }]}
-                  onPress={() => selectAnswer(option)}
-                >
-                  <Text style={styles.optionText}>{option.text}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        )}
+          {screen === "quiz" && question && (
+            <View style={styles.card}>
+              <Text style={styles.progress}>
+                Вопрос {currentIndex + 1} из {QUESTIONS_PER_TEST}
+              </Text>
+              <Text style={styles.question}>{question.text}</Text>
+              <ScrollView style={styles.options}>
+                {question.options.map((option) => (
+                  <TouchableOpacity
+                    key={option.id}
+                    style={[styles.optionButton, { width: buttonWidth }]}
+                    onPress={() => selectAnswer(option)}
+                  >
+                    <Text style={styles.optionText}>{option.text}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          )}
 
-        {screen === "result" && resultHouse && (
-          <View style={styles.card}>
-            <Text style={styles.title}>{HOUSES[resultHouse].title}</Text>
-            <Text style={styles.description}>{HOUSES[resultHouse].description}</Text>
-            <TouchableOpacity
-              style={[styles.button, { width: buttonWidth }]}
-              onPress={restart}
-            >
-              <Text style={styles.buttonText}>Пройти заново</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-    </SafeAreaView>
+          {screen === "result" && resultHouse && (
+            <View style={styles.card}>
+              <Text style={styles.title}>{HOUSES[resultHouse].title}</Text>
+              <Text style={styles.description}>{HOUSES[resultHouse].description}</Text>
+              <TouchableOpacity
+                style={[styles.button, { width: buttonWidth }]}
+                onPress={restart}
+              >
+                <Text style={styles.buttonText}>Пройти заново</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
