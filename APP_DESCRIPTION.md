@@ -33,11 +33,14 @@
 
 Запуск (после `npm install`):
 
-```bash
+```powershell
 npx expo start
 ```
 
-Дальше — QR-код в Expo Go на телефоне или `w` для веб-версии.
+Дальше — QR-код в **Expo Go** на iPhone/Android или `w` для веб-версии на ПК.
+
+**Полная инструкция для Windows + iPhone (Expo Go, Wi‑Fi, tunnel, типичные ошибки):**  
+см. [SETUP_WINDOWS.md](./SETUP_WINDOWS.md) (там же — совместимость iPhone 14 Pro Max / iPhone 13 и версий iOS).
 
 ### Структура папок
 
