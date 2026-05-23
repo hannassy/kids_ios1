@@ -31,7 +31,8 @@
  * Скопируйте блок одного вопроса (от { id: ... } до },), вставьте в конец массива,
  * поменяйте id, text и тексты вариантов. Сумма баллов в scores — на ваш вкус (0–2).
  *
- * Ниже — 12 готовых вопросов. Каждый повторяет одну и ту же структуру.
+ * Ниже — 22 готовых вопроса. Каждый повторяет одну и ту же структуру.
+ * Порядок кнопок на экране перемешивается в QuizScreen — не смотрите на букву «a» в данных.
  */
 
 const QUESTIONS = [
@@ -343,6 +344,266 @@ const QUESTIONS = [
       {
         id: "d",
         text: "Достичь своей цели любой ценой",
+        scores: { slytherin: 2, gryffindor: 1, ravenclaw: 0, hufflepuff: 0 },
+      },
+    ],
+  },
+  {
+    id: 13,
+    text: "Тебе предложили лидерство в новом клубе. Твой первый шаг?",
+    options: [
+      {
+        id: "a",
+        text: "Вдохновить всех смелой идеей",
+        scores: { gryffindor: 2, ravenclaw: 0, hufflepuff: 1, slytherin: 0 },
+      },
+      {
+        id: "b",
+        text: "Составить план и распределить роли",
+        scores: { ravenclaw: 2, slytherin: 1, gryffindor: 0, hufflepuff: 0 },
+      },
+      {
+        id: "c",
+        text: "Убедиться, что никто не останется в стороне",
+        scores: { hufflepuff: 2, gryffindor: 0, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "d",
+        text: "Занять позицию, которая даст больше влияния",
+        scores: { slytherin: 2, ravenclaw: 1, gryffindor: 0, hufflepuff: 0 },
+      },
+    ],
+  },
+  {
+    id: 14,
+    text: "На уроке защиты от тёмных искусств неожиданный вопрос. Ты…",
+    options: [
+      {
+        id: "a",
+        text: "Отвечаешь первым, даже если не уверен",
+        scores: { gryffindor: 2, slytherin: 0, hufflepuff: 0, ravenclaw: 1 },
+      },
+      {
+        id: "b",
+        text: "Вспоминаешь теорию и даёшь точный ответ",
+        scores: { ravenclaw: 2, hufflepuff: 0, gryffindor: 0, slytherin: 0 },
+      },
+      {
+        id: "c",
+        text: "Поддерживаешь одноклассника, который растерялся",
+        scores: { hufflepuff: 2, gryffindor: 1, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "d",
+        text: "Молчишь, пока не поймёшь, что выгоднее сказать",
+        scores: { slytherin: 2, ravenclaw: 1, gryffindor: 0, hufflepuff: 0 },
+      },
+    ],
+  },
+  {
+    id: 15,
+    text: "Какой напиток в «Трёх метл» тебе ближе?",
+    options: [
+      {
+        id: "a",
+        text: "Что-то крепкое и согревающее",
+        scores: { gryffindor: 2, hufflepuff: 0, ravenclaw: 0, slytherin: 1 },
+      },
+      {
+        id: "b",
+        text: "Незнакомый рецепт — хочу попробовать",
+        scores: { ravenclaw: 2, hufflepuff: 1, gryffindor: 0, slytherin: 0 },
+      },
+      {
+        id: "c",
+        text: "Тёплое какао с друзьями за общим столом",
+        scores: { hufflepuff: 2, gryffindor: 0, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "d",
+        text: "То, что сейчас модно среди влиятельных",
+        scores: { slytherin: 2, gryffindor: 0, ravenclaw: 0, hufflepuff: 0 },
+      },
+    ],
+  },
+  {
+    id: 16,
+    text: "Нашёл потерянную вещь одноклассника. Ты…",
+    options: [
+      {
+        id: "a",
+        text: "Сразу несёшь владельцу, даже если опоздаешь",
+        scores: { gryffindor: 2, hufflepuff: 1, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "b",
+        text: "Сначала проверяешь, нет ли подсказки, кому принадлежит",
+        scores: { ravenclaw: 2, hufflepuff: 0, gryffindor: 0, slytherin: 1 },
+      },
+      {
+        id: "c",
+        text: "Оставляешь на видном месте с запиской",
+        scores: { hufflepuff: 2, ravenclaw: 0, gryffindor: 0, slytherin: 0 },
+      },
+      {
+        id: "d",
+        text: "Думаешь, чем это можно воспользоваться",
+        scores: { slytherin: 2, ravenclaw: 0, gryffindor: 0, hufflepuff: 0 },
+      },
+    ],
+  },
+  {
+    id: 17,
+    text: "Квиддич: какая роль тебе интереснее?",
+    options: [
+      {
+        id: "a",
+        text: "Ловец — риск и решающий момент",
+        scores: { gryffindor: 2, slytherin: 1, hufflepuff: 0, ravenclaw: 0 },
+      },
+      {
+        id: "b",
+        text: "Охотник — стратегия и точность",
+        scores: { ravenclaw: 2, slytherin: 0, gryffindor: 1, hufflepuff: 0 },
+      },
+      {
+        id: "c",
+        text: "Битьёр — защита команды",
+        scores: { hufflepuff: 2, gryffindor: 1, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "d",
+        text: "Капитан — управление и победа",
+        scores: { slytherin: 2, gryffindor: 1, ravenclaw: 0, hufflepuff: 0 },
+      },
+    ],
+  },
+  {
+    id: 18,
+    text: "Перед экзаменом ты обычно…",
+    options: [
+      {
+        id: "a",
+        text: "Веришь в себя и идёшь без паники",
+        scores: { gryffindor: 2, hufflepuff: 1, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "b",
+        text: "Повторяешь конспекты и схемы",
+        scores: { ravenclaw: 2, hufflepuff: 0, gryffindor: 0, slytherin: 1 },
+      },
+      {
+        id: "c",
+        text: "Учишься вместе с друзьями и делишься чаем",
+        scores: { hufflepuff: 2, ravenclaw: 0, gryffindor: 0, slytherin: 0 },
+      },
+      {
+        id: "d",
+        text: "Ищешь, что спросят чаще всего",
+        scores: { slytherin: 2, ravenclaw: 1, gryffindor: 0, hufflepuff: 0 },
+      },
+    ],
+  },
+  {
+    id: 19,
+    text: "В Запретном лесу слышен странный шум. Ты…",
+    options: [
+      {
+        id: "a",
+        text: "Идёшь проверить — любопытство сильнее страха",
+        scores: { gryffindor: 2, ravenclaw: 1, hufflepuff: 0, slytherin: 0 },
+      },
+      {
+        id: "b",
+        text: "Вспоминаешь, какие существа водятся в этих местах",
+        scores: { ravenclaw: 2, hufflepuff: 0, gryffindor: 0, slytherin: 0 },
+      },
+      {
+        id: "c",
+        text: "Зовёшь друзей и идёшь только вместе",
+        scores: { hufflepuff: 2, gryffindor: 1, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "d",
+        text: "Обходишь стороной — риск не всегда оправдан",
+        scores: { slytherin: 2, ravenclaw: 1, gryffindor: 0, hufflepuff: 0 },
+      },
+    ],
+  },
+  {
+    id: 20,
+    text: "Что для тебя важнее в сопернике?",
+    options: [
+      {
+        id: "a",
+        text: "Честная игра и уважение",
+        scores: { gryffindor: 2, hufflepuff: 1, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "b",
+        text: "Умение удивить нестандартным ходом",
+        scores: { ravenclaw: 2, slytherin: 0, gryffindor: 0, hufflepuff: 1 },
+      },
+      {
+        id: "c",
+        text: "Дружба после матча, что бы ни было",
+        scores: { hufflepuff: 2, gryffindor: 0, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "d",
+        text: "Сила и желание победить любой ценой",
+        scores: { slytherin: 2, gryffindor: 1, ravenclaw: 0, hufflepuff: 0 },
+      },
+    ],
+  },
+  {
+    id: 21,
+    text: "Тебе дали свободное воскресенье в Хогвартсе. Ты…",
+    options: [
+      {
+        id: "a",
+        text: "Исследуешь новые лестницы и тайные ходы",
+        scores: { gryffindor: 2, ravenclaw: 1, hufflepuff: 0, slytherin: 0 },
+      },
+      {
+        id: "b",
+        text: "Читаешь в библиотеке редкую книгу",
+        scores: { ravenclaw: 2, hufflepuff: 0, gryffindor: 0, slytherin: 1 },
+      },
+      {
+        id: "c",
+        text: "Помогаешь в теплице или на кухне",
+        scores: { hufflepuff: 2, gryffindor: 0, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "d",
+        text: "Встречаешься с теми, кто может пригодиться",
+        scores: { slytherin: 2, ravenclaw: 0, gryffindor: 0, hufflepuff: 0 },
+      },
+    ],
+  },
+  {
+    id: 22,
+    text: "Какой подарок от шляпы ты бы хотел услышать?",
+    options: [
+      {
+        id: "a",
+        text: "«У тебя хватит храбрости»",
+        scores: { gryffindor: 2, hufflepuff: 0, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "b",
+        text: "«Твой ум ведёт тебя дальше других»",
+        scores: { ravenclaw: 2, slytherin: 0, gryffindor: 0, hufflepuff: 1 },
+      },
+      {
+        id: "c",
+        text: "«Ты верный друг и трудяга»",
+        scores: { hufflepuff: 2, gryffindor: 0, ravenclaw: 0, slytherin: 0 },
+      },
+      {
+        id: "d",
+        text: "«Ты добьёшься великих целей»",
         scores: { slytherin: 2, gryffindor: 1, ravenclaw: 0, hufflepuff: 0 },
       },
     ],

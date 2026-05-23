@@ -200,6 +200,7 @@ QR будет работать медленнее, но часто помога�
 | `ENOENT`, нет `node_modules` | Выполнить `npm install` в папке проекта |
 | Порт занят | Закрыть старый терминал с Expo или `npx expo start --port 8082` |
 | Версия SDK не совпадает | В Expo Go обновить приложение из App Store; в проекте `expo` в `package.json` должен соответствовать `sdkVersion` в `app.json` |
+| `[runtime not ready]: Exception in HostFunction` | Часто несовместимый **react-native-reanimated**. В терминале Expo смотрите предупреждение «expected version». Исправление: `npx expo install react-native-reanimated react-native-worklets`, убрать ручной плагин из `babel.config.js`, затем `npx expo start -c` |
 
 Логи с телефона: в Expo Go встряхнуть устройство → **Show Element Inspector** / консоль; на ПК смотреть красный текст в терминале Metro.
 

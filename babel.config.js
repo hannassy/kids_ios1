@@ -5,21 +5,18 @@
  * Babel переписывает наш код в более совместимый вид перед запуском.
  *
  * Expo подключает этот файл автоматически при сборке.
+ *
+ * ВАЖНО (Expo SDK 54 + Reanimated 4):
+ * Плагин для анимаций НЕ прописываем вручную — babel-preset-expo сам добавит
+ * react-native-worklets/plugin, если установлены react-native-reanimated и react-native-worklets.
+ * Дублирование плагина ломает запуск: «Exception in HostFunction».
  */
 
-// module.exports — CommonJS-формат (как в Node.js), Expo так и ожидает конфиг.
 module.exports = function (api) {
-  // api.cache(true) — кэшировать конфиг: быстрее пересборка при `expo start`.
   api.cache(true);
 
   return {
-    // presets — набор правил «по умолчанию».
-    // babel-preset-expo — официальный пресет Expo: JSX, современный JS, особенности RN.
     presets: ["babel-preset-expo"],
-
-    // plugins — дополнительные преобразования.
-    // react-native-reanimated/plugin — ОБЯЗАТЕЛЕН для reanimated (анимации меню).
-    // Важно: этот плагин должен быть ПОСЛЕДНИМ в списке plugins (требование библиотеки).
-    plugins: ["react-native-reanimated/plugin"],
+    // plugins: [] — намеренно пусто; worklets/reanimated подставит preset-expo.
   };
 };

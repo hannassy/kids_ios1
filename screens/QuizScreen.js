@@ -1,57 +1,30 @@
 /**
  * QuizScreen.js — весь ТЕСТ в одном экране.
  *
- * Три «подэкрана» переключаются через state screen:
- *   welcome — приветствие и кнопка «Пройти тест»
- *   quiz    — вопросы по очереди
- *   result  — итоговый факультет
- *
- * Так проще для начала обучения; позже можно разнести на WelcomeScreen / QuestionScreen / ResultScreen.
+ * Подэкраны (screen):
+ *   welcome — приветствие
+ *   quiz    — вопросы (варианты ответа в случайном порядке)
+ *   choice  — если ~60% / ~40% между двумя факультетами — выбор пользователя
+ *   result  — финал с фоном-флагом выбранного дома
  */
 
-// useState — хук React: переменная, при изменении которой экран перерисовывается.
 import { useState } from "react";
-
 import {
   ScrollView,
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  useWindowDimensions, // ширина/высота окна — чтобы кнопки не были шире экрана
+  useWindowDimensions,
 } from "react-native";
 
-// Вопросы из отдельного файла (банк из 12 штук).
 import QUESTIONS from "../questions";
+import { HOUSE_THEMES } from "../houseTheme";
+import HouseFlagBackground from "../components/HouseFlagBackground";
+import { calculateHouseTotals, resolveQuizOutcome } from "../utils/quizScoring";
 
-// Сколько вопросов за один прохождение теста (легко поменять на 3 или 7).
 const QUESTIONS_PER_TEST = 5;
 
-// Тексты результата с emoji (в QuizScreen свой объект; в houses.js — без emoji для ResultScreen).
-const HOUSES = {
-  gryffindor: {
-    title: "🦁 Гриффиндор",
-    description:
-      "Смелость, благородство и решимость делают тебя идеальным учеником этого факультета.",
-  },
-  hufflepuff: {
-    title: "🦡 Пуффендуй",
-    description: "Верность, доброта и трудолюбие — твои главные качества.",
-  },
-  ravenclaw: {
-    title: "🦅 Когтевран",
-    description: "Интеллект, любознательность и оригинальность ведут тебя вперед.",
-  },
-  slytherin: {
-    title: "🐍 Слизерин",
-    description: "Амбиции, хитрость и воля к победе — твои сильные стороны.",
-  },
-};
-
-/**
- * shuffle — перемешивает массив (алгоритм Фишера–Йетса).
- * Копируем массив [...array], чтобы не испортить оригинал QUESTIONS.
- */
 function shuffle(array) {
   const result = [...array];
   for (let i = result.length - 1; i > 0; i -= 1) {
@@ -61,46 +34,65 @@ function shuffle(array) {
   return result;
 }
 
+/** Вопрос + варианты ответов в случайном порядке (позиция «а» ≠ всегда Гриффиндор). */
+function prepareQuestionBatch(questions, count) {
+  return shuffle(questions)
+    .slice(0, count)
+    .map((question) => ({
+      ...question,
+      options: shuffle(question.options),
+    }));
+}
+
 export default function QuizScreen() {
   const { width } = useWindowDimensions();
 
-  // --- Состояние теста (state) ---
   const [screen, setScreen] = useState("welcome");
-  const [questionBatch, setQuestionBatch] = useState([]); // 5 выбранных вопросов
-  const [currentIndex, setCurrentIndex] = useState(0); // номер текущего (0..4)
-  const [selectedAnswers, setSelectedAnswers] = useState([]); // выбранные варианты ответов
-  const [resultHouse, setResultHouse] = useState(null); // ключ победившего факультета
+  const [questionBatch, setQuestionBatch] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [resultHouse, setResultHouse] = useState(null);
+  /** Два факультета на выбор, если шляпа «не решилась». */
+  const [choiceOptions, setChoiceOptions] = useState([]);
+  const [choicePercents, setChoicePercents] = useState({});
 
-  // Ширина кнопок: не больше 360px и с отступами от краёв экрана.
   const buttonWidth = Math.min(360, width - 32);
 
-  /** Сброс и старт: случайные 5 вопросов, обнуляем ответы. */
-  const startTest = () => {
-    setQuestionBatch(shuffle(QUESTIONS).slice(0, QUESTIONS_PER_TEST));
+  const resetQuiz = () => {
+    setQuestionBatch([]);
     setCurrentIndex(0);
     setSelectedAnswers([]);
     setResultHouse(null);
+    setChoiceOptions([]);
+    setChoicePercents({});
+    setScreen("welcome");
+  };
+
+  const startTest = () => {
+    setQuestionBatch(prepareQuestionBatch(QUESTIONS, QUESTIONS_PER_TEST));
+    setCurrentIndex(0);
+    setSelectedAnswers([]);
+    setResultHouse(null);
+    setChoiceOptions([]);
+    setChoicePercents({});
     setScreen("quiz");
   };
 
-  /**
-   * finishTest — подсчёт баллов по всем ответам.
-   * У каждого option есть scores: { gryffindor: 2, ... } — складываем.
-   */
   const finishTest = (answers) => {
-    const total = { gryffindor: 0, hufflepuff: 0, ravenclaw: 0, slytherin: 0 };
-    answers.forEach((option) => {
-      Object.entries(option.scores).forEach(([house, value]) => {
-        total[house] += value;
-      });
-    });
-    // Сортируем факультеты по убыванию баллов; первый — победитель.
-    const sorted = Object.entries(total).sort((a, b) => b[1] - a[1]);
-    setResultHouse(sorted[0][0]);
+    const totals = calculateHouseTotals(answers);
+    const outcome = resolveQuizOutcome(totals);
+
+    if (outcome.type === "choice") {
+      setChoiceOptions(outcome.options);
+      setChoicePercents(outcome.percents);
+      setScreen("choice");
+      return;
+    }
+
+    setResultHouse(outcome.winner);
     setScreen("result");
   };
 
-  /** Пользователь нажал вариант ответа. */
   const selectAnswer = (option) => {
     const nextAnswers = [...selectedAnswers, option];
     setSelectedAnswers(nextAnswers);
@@ -112,11 +104,34 @@ export default function QuizScreen() {
     }
   };
 
+  const confirmHouseChoice = (houseKey) => {
+    setResultHouse(houseKey);
+    setScreen("result");
+  };
+
   const question = questionBatch[currentIndex];
+  const theme = resultHouse ? HOUSE_THEMES[resultHouse] : null;
+
+  if (screen === "result" && resultHouse && theme) {
+    return (
+      <HouseFlagBackground houseKey={resultHouse}>
+        <View style={styles.resultCard}>
+          <Text style={styles.resultTitle}>{theme.title}</Text>
+          <Text style={styles.resultDescription}>{theme.description}</Text>
+          <Text style={styles.resultHint}>Добро пожаловать в свой факультет!</Text>
+          <TouchableOpacity
+            style={[styles.button, styles.buttonOnFlag, { width: buttonWidth }]}
+            onPress={resetQuiz}
+          >
+            <Text style={styles.buttonText}>Пройти заново</Text>
+          </TouchableOpacity>
+        </View>
+      </HouseFlagBackground>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      {/* --- Экран приветствия --- */}
       {screen === "welcome" && (
         <View style={styles.card}>
           <Text style={styles.title}>Распределяющая шляпа</Text>
@@ -130,7 +145,6 @@ export default function QuizScreen() {
         </View>
       )}
 
-      {/* --- Экран вопроса --- */}
       {screen === "quiz" && question && (
         <View style={styles.card}>
           <Text style={styles.progress}>
@@ -151,19 +165,27 @@ export default function QuizScreen() {
         </View>
       )}
 
-      {/* --- Экран результата --- */}
-      {screen === "result" && resultHouse && (
+      {screen === "choice" && choiceOptions.length === 2 && (
         <View style={styles.card}>
-          <Text style={styles.title}>{HOUSES[resultHouse].title}</Text>
-          <Text style={styles.description}>{HOUSES[resultHouse].description}</Text>
-          <TouchableOpacity
-            style={[styles.button, { width: buttonWidth }]}
-            onPress={() => setScreen("welcome")}
-          >
-            <Text style={styles.buttonText}>Пройти заново</Text>
-          </TouchableOpacity>
+          <Text style={styles.title}>Шляпа колеблется…</Text>
+          <Text style={styles.subtitle}>
+            Твои ответы близки к двум факультетам. Куда ты хочешь попасть?
+          </Text>
+          {choiceOptions.map((houseKey) => (
+            <TouchableOpacity
+              key={houseKey}
+              style={[styles.choiceButton, { width: buttonWidth }]}
+              onPress={() => confirmHouseChoice(houseKey)}
+            >
+              <Text style={styles.choiceTitle}>{HOUSE_THEMES[houseKey].title}</Text>
+              <Text style={styles.choicePercent}>
+                ~{choicePercents[houseKey]}% по ответам
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       )}
+
     </View>
   );
 }
@@ -178,7 +200,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: "center",
   },
-  subtitle: { fontSize: 16, color: "#cbd5e1", marginBottom: 24, textAlign: "center" },
+  subtitle: { fontSize: 16, color: "#cbd5e1", marginBottom: 24, textAlign: "center", lineHeight: 24 },
   progress: { color: "#94a3b8", marginBottom: 12, fontSize: 14, textAlign: "center" },
   question: {
     color: "#e2e8f0",
@@ -195,6 +217,49 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   optionText: { color: "#f8fafc", fontSize: 16 },
+  choiceButton: {
+    backgroundColor: "#1e293b",
+    borderRadius: 14,
+    paddingVertical: 18,
+    paddingHorizontal: 18,
+    marginBottom: 14,
+    alignSelf: "center",
+    borderWidth: 2,
+    borderColor: "#6366f1",
+  },
+  choiceTitle: { color: "#f8fafc", fontSize: 18, fontWeight: "700", textAlign: "center" },
+  choicePercent: { color: "#94a3b8", fontSize: 14, marginTop: 6, textAlign: "center" },
+  resultCard: {
+    backgroundColor: "rgba(17, 24, 39, 0.75)",
+    borderRadius: 20,
+    padding: 28,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
+  },
+  resultTitle: {
+    fontSize: 32,
+    fontWeight: "800",
+    color: "#ffffff",
+    marginBottom: 16,
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  resultDescription: {
+    color: "#f1f5f9",
+    fontSize: 18,
+    lineHeight: 26,
+    textAlign: "center",
+    marginBottom: 12,
+  },
+  resultHint: {
+    color: "#e2e8f0",
+    fontSize: 15,
+    textAlign: "center",
+    marginBottom: 8,
+    fontStyle: "italic",
+  },
   button: {
     backgroundColor: "#6366f1",
     borderRadius: 14,
@@ -203,6 +268,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignSelf: "center",
   },
+  buttonOnFlag: { backgroundColor: "rgba(99, 102, 241, 0.95)" },
   buttonText: { color: "#ffffff", fontSize: 16, fontWeight: "700" },
-  description: { color: "#cbd5e1", fontSize: 18, lineHeight: 26, textAlign: "center" },
 });
