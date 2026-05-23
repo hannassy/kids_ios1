@@ -1,7 +1,7 @@
 {
   "name": "myapp6",
   "version": "1.0.0",
-  "description": "",
+  "description": "Семейный учебный проект: сортировка по факультетам Хогвартса (Expo + React Native). Совместная разработка с дочерьми.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,12 +11,18 @@
   "license": "ISC",
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
+    "@react-navigation/drawer": "^7.10.2",
+    "@react-navigation/native": "^7.2.4",
+    "@react-navigation/stack": "^7.9.2",
     "babel-preset-expo": "~54.0.10",
     "expo": "^54.0.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
-    "react-native-safe-area-context": "^4.8.2",
+    "react-native-gesture-handler": "~2.28.0",
+    "react-native-reanimated": "^3.10.1",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-screens": "~4.16.0",
     "react-native-web": "^0.21.0"
   }
 }
