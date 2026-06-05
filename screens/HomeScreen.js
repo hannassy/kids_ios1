@@ -25,14 +25,14 @@ export default function HomeScreen({ navigation }) {
     // style={styles.container} — класс из объекта StyleSheet внизу файла.
     <View style={styles.container}>
       <Text style={styles.title}>🏰 Хогвартс</Text>
-      <Text style={styles.subtitle}>Добро пожаловать!</Text>
+      <Text style={styles.subtitle}>Амиго! Коничуа! Холла! Бонжур!</Text>
 
       {/* onPress — функция, вызываемая при нажатии (как onClick в HTML). */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate("Quiz")}
       >
-        <Text style={styles.buttonText}>🎩 Сортировочная шляпа</Text>
+        <Text style={styles.buttonText}>🎩 Распределяющая шляпа</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
